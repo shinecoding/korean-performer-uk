@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <g transform="rotate(-32 16 16)">
+    <!-- Gayageum body -->
+    <rect x="2.5" y="10.5" width="27" height="11" rx="1.5" fill="#0a0a0a" stroke="#c9a961" stroke-width="1.5"/>
+    <rect x="4" y="12" width="24" height="8" rx="0.75" fill="#1c1810"/>
+    <!-- Bridges -->
+    <g stroke="#c9a961" stroke-width="1.1" stroke-linecap="round">
+      <path d="M7.5 13v6"/>
+      <path d="M11.5 12.75v6.5"/>
+      <path d="M15.5 13v6"/>
+      <path d="M19.5 12.75v6.5"/>
+      <path d="M23.5 13v6"/>
+    </g>
+    <!-- Strings -->
+    <g stroke="#e2cd94" stroke-width="0.6">
+      <path d="M5 13.5h22"/>
+      <path d="M5 16h22"/>
+      <path d="M5 18.5h22"/>
+    </g>
+    <!-- Peg head -->
+    <rect x="1.5" y="12" width="2.5" height="8" rx="0.6" fill="#c9a961"/>
+  </g>
+</svg>
