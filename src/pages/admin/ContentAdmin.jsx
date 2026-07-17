@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { getSiteContent, saveSiteContent } from '../../lib/firestore'
 import { defaultContent, mergeSiteContent } from '../../lib/defaultContent'
 import ImageUploader from '../../components/admin/ImageUploader'
+import { applyFavicon } from '../../components/FaviconSync'
 
 export default function ContentAdmin() {
   const [form, setForm] = useState(defaultContent)
@@ -44,6 +45,7 @@ export default function ContentAdmin() {
       const clients = form.clients.filter((c) => c.name.trim())
       const { founderText: _omit, ...rest } = form
       await saveSiteContent({ ...rest, clients, founderText: '' })
+      applyFavicon(form.faviconUrl)
       setSaved(true)
     } finally {
       setSaving(false)
@@ -55,25 +57,34 @@ export default function ContentAdmin() {
   return (
     <div className="max-w-2xl">
       <h1 className="text-2xl font-semibold text-neutral-900">Site Content</h1>
-      <p className="mt-1 text-sm text-neutral-500">Edit the homepage and About Us text.</p>
 
       <form onSubmit={handleSubmit} className="mt-6 space-y-5">
         <div>
-          <label className="mb-1 block text-xs font-medium text-neutral-500">
-            Homepage Banner Image (배너 이미지)
-          </label>
+          <label className="mb-1 block text-xs font-medium text-neutral-500">파비콘 (사이트 아이콘)</label>
+          <ImageUploader
+            value={form.faviconUrl}
+            onChange={(url) => setForm((f) => ({ ...f, faviconUrl: url }))}
+            path="content"
+          />
+          <p className="mt-1 text-xs text-neutral-400">
+            PNG, SVG, ICO 가능. 정사각형(예: 32×32 또는 512×512)이 브라우저 탭에 가장 잘 보입니다.
+          </p>
+        </div>
+
+        <div>
+          <label className="mb-1 block text-xs font-medium text-neutral-500">홈페이지 배너 이미지</label>
           <ImageUploader
             value={form.heroImageUrl}
             onChange={(url) => setForm((f) => ({ ...f, heroImageUrl: url }))}
             path="content"
           />
           <p className="mt-1 text-xs text-neutral-400">
-            권장 비율은 가로로 넓은 사진(예: 1920x1080)입니다. 모바일/데스크톱 모두 화면 너비에 꽉 차게 자동으로 잘려서 표시됩니다.
+            권장 비율은 가로로 넓은 사진(예: 1920×1080)입니다. 모바일/데스크톱 모두 화면 너비에 맞게 잘려서 표시됩니다.
           </p>
         </div>
 
         <div>
-          <label htmlFor="heroTitle" className="mb-1 block text-xs font-medium text-neutral-500">Homepage Title</label>
+          <label htmlFor="heroTitle" className="mb-1 block text-xs font-medium text-neutral-500">홈페이지 제목</label>
           <input
             id="heroTitle"
             name="heroTitle"
@@ -84,7 +95,7 @@ export default function ContentAdmin() {
         </div>
 
         <div>
-          <label htmlFor="heroIntro" className="mb-1 block text-xs font-medium text-neutral-500">Homepage Intro</label>
+          <label htmlFor="heroIntro" className="mb-1 block text-xs font-medium text-neutral-500">홈페이지 소개 문구</label>
           <textarea
             id="heroIntro"
             name="heroIntro"
@@ -96,7 +107,7 @@ export default function ContentAdmin() {
         </div>
 
         <div>
-          <label htmlFor="aboutTitle" className="mb-1 block text-xs font-medium text-neutral-500">About Section Title</label>
+          <label htmlFor="aboutTitle" className="mb-1 block text-xs font-medium text-neutral-500">About 섹션 제목</label>
           <input
             id="aboutTitle"
             name="aboutTitle"
@@ -107,19 +118,19 @@ export default function ContentAdmin() {
         </div>
 
         <div>
-          <label className="mb-1 block text-xs font-medium text-neutral-500">About Section Image</label>
+          <label className="mb-1 block text-xs font-medium text-neutral-500">About 섹션 이미지</label>
           <ImageUploader
             value={form.aboutImageUrl}
             onChange={(url) => setForm((f) => ({ ...f, aboutImageUrl: url }))}
             path="content"
           />
           <p className="mt-1 text-xs text-neutral-400">
-            Portrait photo works best (e.g. 4:5). Shown beside the About text — not as a background.
+            세로형 사진(예: 4:5)이 잘 맞습니다. 배경이 아니라 About 글 옆에 표시됩니다.
           </p>
         </div>
 
         <div>
-          <label htmlFor="aboutText" className="mb-1 block text-xs font-medium text-neutral-500">About Us Text</label>
+          <label htmlFor="aboutText" className="mb-1 block text-xs font-medium text-neutral-500">About Us 본문</label>
           <textarea
             id="aboutText"
             name="aboutText"
@@ -132,7 +143,7 @@ export default function ContentAdmin() {
 
         <div>
           <label className="mb-2 block text-xs font-medium text-neutral-500">
-            Our Clients (로고 이미지 + 이름 — 홈페이지에서 좌우로 흐르는 형태로 표시됩니다)
+            Our Clients (로고 + 이름 — 홈페이지에서 좌우로 흐르는 형태로 표시됩니다)
           </label>
           <div className="space-y-3">
             {form.clients.map((client, index) => (
@@ -146,7 +157,7 @@ export default function ContentAdmin() {
                 <input
                   value={client.name}
                   onChange={(e) => updateClient(index, 'name', e.target.value)}
-                  placeholder="Client name"
+                  placeholder="클라이언트 이름"
                   className="flex-1 rounded-md border border-neutral-300 px-3 py-2 text-sm focus:border-neutral-900 focus:outline-none"
                 />
                 <button
@@ -174,9 +185,9 @@ export default function ContentAdmin() {
             disabled={saving}
             className="rounded-md bg-neutral-900 px-5 py-2 text-sm font-medium text-white hover:bg-neutral-700 disabled:opacity-50"
           >
-            {saving ? 'Saving…' : 'Save'}
+            {saving ? '저장 중…' : '저장'}
           </button>
-          {saved && <span className="text-sm text-green-600">Saved.</span>}
+          {saved && <span className="text-sm text-green-600">저장되었습니다.</span>}
         </div>
       </form>
     </div>

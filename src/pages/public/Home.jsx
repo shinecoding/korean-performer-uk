@@ -135,7 +135,7 @@ export default function Home() {
 
       {clients.length > 0 && (
         <section className="border-t border-white/10 py-24 sm:py-28">
-          <p className="type-label text-center text-white/40">Our Clients</p>
+          <h2 className="type-section text-center text-white">Our Clients</h2>
           <div className="relative mt-12 overflow-hidden">
             <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-black to-transparent sm:w-32" />
             <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-black to-transparent sm:w-32" />

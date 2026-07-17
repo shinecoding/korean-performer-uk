@@ -3,26 +3,27 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { createPerformer, getPerformer, updatePerformer } from '../../lib/firestore'
 import MultiImageUploader from '../../components/admin/MultiImageUploader'
 import { getPerformerPhotos } from '../../lib/performerPhotos'
+import { getPerformerYoutubeUrls } from '../../lib/performerVideos'
 
 const emptyForm = {
   name: '',
   role: '',
   category: 'korean',
-  shortIntro: '',
   bio: '',
   photoUrls: [],
-  youtubeUrl: '',
+  youtubeUrls: [''],
 }
 
 function toPayload(form) {
   const photoUrls = (form.photoUrls || []).filter(Boolean)
+  const youtubeUrls = (form.youtubeUrls || []).map((u) => u.trim()).filter(Boolean)
   return {
     name: form.name,
     role: form.role,
     category: form.category,
-    shortIntro: form.shortIntro,
     bio: form.bio,
-    youtubeUrl: form.youtubeUrl,
+    youtubeUrls,
+    youtubeUrl: youtubeUrls[0] || '',
     photoUrls,
     photoUrl: photoUrls[0] || '',
   }
@@ -41,10 +42,12 @@ export default function PerformerForm() {
     if (!isEdit) return
     getPerformer(id).then((data) => {
       if (data) {
+        const youtubeUrls = getPerformerYoutubeUrls(data)
         setForm({
           ...emptyForm,
           ...data,
           photoUrls: getPerformerPhotos(data),
+          youtubeUrls: youtubeUrls.length ? youtubeUrls : [''],
         })
       }
       setLoading(false)
@@ -53,6 +56,25 @@ export default function PerformerForm() {
 
   const handleChange = (e) => {
     setForm((f) => ({ ...f, [e.target.name]: e.target.value }))
+  }
+
+  const handleYoutubeChange = (index, value) => {
+    setForm((f) => {
+      const youtubeUrls = [...f.youtubeUrls]
+      youtubeUrls[index] = value
+      return { ...f, youtubeUrls }
+    })
+  }
+
+  const addYoutube = () => {
+    setForm((f) => ({ ...f, youtubeUrls: [...f.youtubeUrls, ''] }))
+  }
+
+  const removeYoutube = (index) => {
+    setForm((f) => {
+      const youtubeUrls = f.youtubeUrls.filter((_, i) => i !== index)
+      return { ...f, youtubeUrls: youtubeUrls.length ? youtubeUrls : [''] }
+    })
   }
 
   const handleSubmit = async (e) => {
@@ -127,18 +149,6 @@ export default function PerformerForm() {
         </div>
 
         <div>
-          <label htmlFor="shortIntro" className="mb-1 block text-xs font-medium text-neutral-500">Short Intro</label>
-          <textarea
-            id="shortIntro"
-            name="shortIntro"
-            rows={2}
-            value={form.shortIntro}
-            onChange={handleChange}
-            className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:border-neutral-900 focus:outline-none"
-          />
-        </div>
-
-        <div>
           <label htmlFor="bio" className="mb-1 block text-xs font-medium text-neutral-500">Bio</label>
           <textarea
             id="bio"
@@ -151,15 +161,38 @@ export default function PerformerForm() {
         </div>
 
         <div>
-          <label htmlFor="youtubeUrl" className="mb-1 block text-xs font-medium text-neutral-500">YouTube Video URL</label>
-          <input
-            id="youtubeUrl"
-            name="youtubeUrl"
-            value={form.youtubeUrl}
-            onChange={handleChange}
-            placeholder="https://www.youtube.com/watch?v=..."
-            className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:border-neutral-900 focus:outline-none"
-          />
+          <div className="mb-1 flex items-center justify-between">
+            <label className="block text-xs font-medium text-neutral-500">YouTube Video URLs</label>
+            <button
+              type="button"
+              onClick={addYoutube}
+              className="text-xs font-medium text-neutral-600 hover:text-neutral-900"
+            >
+              + Add video
+            </button>
+          </div>
+          <div className="space-y-2">
+            {form.youtubeUrls.map((url, index) => (
+              <div key={index} className="flex gap-2">
+                <input
+                  type="url"
+                  value={url}
+                  onChange={(e) => handleYoutubeChange(index, e.target.value)}
+                  placeholder="https://www.youtube.com/watch?v=..."
+                  className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:border-neutral-900 focus:outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeYoutube(index)}
+                  className="shrink-0 rounded-md border border-neutral-300 px-3 text-sm text-neutral-500 hover:bg-neutral-100 hover:text-red-600"
+                  aria-label={`Remove video ${index + 1}`}
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+          </div>
+          <p className="mt-1 text-xs text-neutral-400">Add as many YouTube links as you like.</p>
         </div>
 
         <div className="flex gap-3 pt-2">

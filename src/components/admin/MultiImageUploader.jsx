@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { deleteImageByUrl, uploadImage } from '../../lib/storage'
 
-export default function MultiImageUploader({ values = [], onChange, path }) {
+export default function MultiImageUploader({ values = [], onChange, path, preview = 'cover' }) {
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState('')
 
@@ -40,13 +40,28 @@ export default function MultiImageUploader({ values = [], onChange, path }) {
     onChange(next)
   }
 
+  const natural = preview === 'natural'
+
   return (
     <div>
       {values.length > 0 && (
-        <div className="mb-3 grid grid-cols-3 gap-3 sm:grid-cols-4">
+        <div className={`mb-3 grid gap-3 ${natural ? 'grid-cols-2 sm:grid-cols-3' : 'grid-cols-3 sm:grid-cols-4'}`}>
           {values.map((url, index) => (
-            <div key={url} className="group relative aspect-[3/4] overflow-hidden rounded-md border border-neutral-200 bg-neutral-50">
-              <img src={url} alt="" className="h-full w-full object-cover" />
+            <div
+              key={url}
+              className={`group relative overflow-hidden rounded-md border border-neutral-200 bg-neutral-50 ${
+                natural ? '' : 'aspect-[3/4]'
+              }`}
+            >
+              <img
+                src={url}
+                alt=""
+                className={
+                  natural
+                    ? 'mx-auto block h-auto max-h-56 w-full object-contain'
+                    : 'h-full w-full object-cover'
+                }
+              />
               {index === 0 && (
                 <span className="absolute left-1.5 top-1.5 rounded bg-neutral-900/80 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-white">
                   Cover

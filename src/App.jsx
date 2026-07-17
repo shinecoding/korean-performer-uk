@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
+import FaviconSync from './components/FaviconSync'
 
 import PublicLayout from './components/public/PublicLayout'
 import Home from './pages/public/Home'
@@ -25,6 +26,7 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <FaviconSync />
         <Routes>
           <Route element={<PublicLayout />}>
             <Route index element={<Home />} />

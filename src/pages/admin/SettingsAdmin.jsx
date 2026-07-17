@@ -43,7 +43,7 @@ export default function SettingsAdmin() {
 
   return (
     <div className="max-w-xl">
-      <h1 className="text-2xl font-semibold text-neutral-900">Settings</h1>
+      <h1 className="text-2xl font-semibold text-neutral-900">Footer Links</h1>
       <p className="mt-1 text-sm text-neutral-500">Edit the social media links shown in the footer.</p>
 
       <form onSubmit={handleSubmit} className="mt-6 space-y-5">

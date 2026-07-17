@@ -72,6 +72,7 @@ export default function GalleryForm() {
             values={form.imageUrls}
             onChange={(imageUrls) => setForm((f) => ({ ...f, imageUrls }))}
             path="gallery"
+            preview="natural"
           />
         </div>
 

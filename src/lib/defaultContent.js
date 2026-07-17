@@ -1,4 +1,5 @@
 export const defaultContent = {
+  faviconUrl: '/favicon.svg',
   heroImageUrl: '/hero.jpg',
   heroTitle: 'Korean & Asian Performers UK',
   heroIntro:
@@ -42,6 +43,7 @@ export function mergeSiteContent(data) {
   const merged = { ...defaultContent, ...data }
   if (!merged.heroImageUrl) merged.heroImageUrl = defaultContent.heroImageUrl
   if (!merged.aboutImageUrl) merged.aboutImageUrl = defaultContent.aboutImageUrl
+  if (!merged.faviconUrl) merged.faviconUrl = defaultContent.faviconUrl
   merged.clients = normalizeClients(merged.clients)
   // Drop legacy field if present in older Firestore docs
   delete merged.founderText

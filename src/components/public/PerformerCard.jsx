@@ -18,9 +18,6 @@ export default function PerformerCard({ performer }) {
       <div className="mt-5">
         <h3 className="type-subhead text-white transition-colors group-hover:text-gold">{performer.name}</h3>
         <p className="type-label mt-2 text-gold/90">{performer.role}</p>
-        {performer.shortIntro && (
-          <p className="type-body mt-3 line-clamp-2 text-white/50">{performer.shortIntro}</p>
-        )}
       </div>
     </Link>
   )

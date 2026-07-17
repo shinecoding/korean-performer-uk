@@ -6,7 +6,7 @@ const links = [
   { to: '/admin/performers', label: 'Performers' },
   { to: '/admin/gallery', label: 'Gallery' },
   { to: '/admin/content', label: 'Site Content' },
-  { to: '/admin/settings', label: 'Settings' },
+  { to: '/admin/settings', label: 'Footer Links' },
 ]
 
 export default function AdminLayout() {

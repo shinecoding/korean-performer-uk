@@ -34,7 +34,8 @@ export default function ContactSection() {
       await sendContactEmail(form)
       setStatus('success')
       setForm({ firstName: '', lastName: '', email: '', message: '' })
-    } catch {
+    } catch (err) {
+      console.error('[EmailJS]', err?.text || err?.message || err)
       setStatus('error')
     }
   }

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getPerformer } from '../../lib/firestore'
-import { getYoutubeEmbedUrl } from '../../lib/youtube'
 import { getPerformerPhotos } from '../../lib/performerPhotos'
+import { getPerformerYoutubeEmbeds } from '../../lib/performerVideos'
 
 const PLACEHOLDER = '/performer-placeholder.svg'
 
@@ -37,7 +37,7 @@ export default function PerformerDetail() {
 
   const activePhoto = photos[activeIndex] || PLACEHOLDER
   const hasCarousel = photos.length > 1
-  const embedUrl = getYoutubeEmbedUrl(performer.youtubeUrl)
+  const embedUrls = getPerformerYoutubeEmbeds(performer)
 
   const goPrev = () => {
     setActiveIndex((i) => (i - 1 + photos.length) % photos.length)
@@ -103,9 +103,6 @@ export default function PerformerDetail() {
           <div className="lg:sticky lg:top-28 lg:self-start lg:pt-10">
             <p className="type-label text-white/40">{performer.role}</p>
             <h1 className="type-section mt-5 text-white">{performer.name}</h1>
-            {performer.shortIntro && (
-              <p className="type-body mt-8 text-white/55">{performer.shortIntro}</p>
-            )}
             <Link
               to={`/?performer=${encodeURIComponent(performer.name)}#contact`}
               className="btn btn-gold mt-12 w-fit"
@@ -127,18 +124,22 @@ export default function PerformerDetail() {
         </section>
       )}
 
-      {embedUrl && (
+      {embedUrls.length > 0 && (
         <section className="border-t border-white/[0.06]">
           <div className="site-shell py-24 sm:py-32">
             <p className="type-label text-center text-white/35">Performance</p>
-            <div className="mt-10 aspect-video overflow-hidden bg-black">
-              <iframe
-                src={embedUrl}
-                title={`${performer.name} performance video`}
-                className="h-full w-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
+            <div className="mt-10 space-y-8">
+              {embedUrls.map((embedUrl, index) => (
+                <div key={embedUrl} className="aspect-video overflow-hidden bg-black">
+                  <iframe
+                    src={embedUrl}
+                    title={`${performer.name} performance video ${index + 1}`}
+                    className="h-full w-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+              ))}
             </div>
           </div>
         </section>

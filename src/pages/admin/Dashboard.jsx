@@ -4,7 +4,7 @@ const cards = [
   { to: '/admin/performers', title: 'Performers', description: 'Manage Korean & Asian performer profiles' },
   { to: '/admin/gallery', title: 'Gallery', description: 'Manage gallery photos' },
   { to: '/admin/content', title: 'Site Content', description: 'Edit homepage & about text' },
-  { to: '/admin/settings', title: 'Settings', description: 'Edit social media links' },
+  { to: '/admin/settings', title: 'Footer Links', description: 'Edit social links shown in the site footer' },
 ]
 
 export default function Dashboard() {
